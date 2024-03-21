@@ -17,9 +17,9 @@ public class ActivityController {
 
     private final ActivityService activityService;
 
-    @PostMapping("/add")
-    public ResponseEntity<ActivityModel> addNewActivity(@Valid @RequestBody ActivityReqDto activityDto) {
-        ActivityModel activityModel = activityService.addNewActivity(activityDto);
+    @PostMapping("/add/{habitId}")
+    public ResponseEntity<ActivityModel> addNewActivity(@Valid @RequestBody ActivityReqDto activityDto, @PathVariable Long habitId) {
+        ActivityModel activityModel = activityService.addNewActivity(activityDto, habitId);
         return new ResponseEntity<>(activityModel, HttpStatus.CREATED);
     }
 

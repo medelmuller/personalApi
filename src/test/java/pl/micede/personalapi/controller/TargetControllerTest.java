@@ -1,6 +1,7 @@
 package pl.micede.personalapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
+import pl.micede.personalapi.dto.TargetReadDto;
 import pl.micede.personalapi.dto.TargetReqDto;
 import pl.micede.personalapi.model.HabitModel;
 import pl.micede.personalapi.model.TargetCategory;
@@ -22,8 +24,10 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
+import static org.awaitility.Awaitility.given;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = TargetController.class)
@@ -35,40 +39,49 @@ class TargetControllerTest {
     @MockBean
     private TargetService targetService;
 
-    @MockBean
+    @Autowired
     private TargetMapper targetMapper;
 
-    private final String targetName = "Study";
-    private final String targetDescription = "Study harder for final project";
-    private final TargetCategory targetCategory = TargetCategory.KNOWLEDGE;
-    private final LocalDateTime targetBegins = LocalDateTime.of(2024, Month.JUNE, 1, 12, 00);
-    private final LocalDateTime targetEnds = LocalDateTime.of(2024, Month.JULY, 3, 12, 00);
-    private final List<HabitModel> habits = null;
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private TargetModel targetModel;
+    @BeforeEach
+    void setUp() {
+        targetModel = new TargetModel();
+        targetModel.setId(1L);
+        targetModel.setTargetName("Study");
+        targetModel.setDescription("Study harder for final project");
+        targetModel.setTargetCategory(TargetCategory.KNOWLEDGE);
+        targetModel.setTargetBegins(LocalDateTime.of(2024, Month.JUNE, 1, 12, 00));
+        targetModel.setTargetEnds(LocalDateTime.of(2024, Month.JULY, 3, 12, 00));
+        targetModel.setHabits(null);
+    }
 
 
     @Test
     void addNewTarget_shouldReturnCreatedTarget() throws Exception{
         //given
-        TargetReqDto targetReqDto = new TargetReqDto();
-        targetReqDto.setTargetName(targetName);
-        targetReqDto.setDescription(targetDescription);
-        targetReqDto.setTargetCategory(targetCategory);
-        targetReqDto.setTargetBegins(targetBegins);
-        targetReqDto.setTargetEnds(targetEnds);
-        targetReqDto.setHabits(habits);
-        //when
-        TargetModel model = targetMapper.toModel(targetReqDto);
-        Mockito.when(targetService.addNewTarget(targetReqDto)).thenReturn(model);
-
-        //then
+        TargetReqDto reqDto = targetMapper.toReqDto(targetModel);
+        Mockito.when(targetService.addNewTarget(reqDto)).thenReturn(targetModel);
+        //when //then
         mockMvc.perform(post("/target/add")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(model))
+                        .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reqDto))
                 ).andExpect(status().isCreated());
+//                .andExpect(content().json(objectMapper.writeValueAsString(targetModel)));
     }
 
     @Test
-    void getTargetById() {
+    void getTargetById_ShouldGetTargetById() throws Exception {
+        TargetReadDto dto = targetMapper.toDto(targetModel);
+        Mockito.when(targetService.getTargetById(targetModel.getId())).thenReturn(dto);
+
+        mockMvc.perform(get("/target/{id}", targetModel.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(dto)));
+
     }
 
     @Test

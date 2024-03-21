@@ -36,5 +36,16 @@ public class TargetMapper {
                 .build();
     }
 
+    public TargetReqDto toReqDto(TargetModel targetModel) {
+        return TargetReqDto.builder()
+                .targetName(targetModel.getTargetName())
+                .description(targetModel.getDescription())
+                .targetCategory(targetModel.getTargetCategory())
+                .targetBegins(targetModel.getTargetBegins())
+                .targetEnds(targetModel.getTargetEnds())
+                .habits(targetModel.getHabits())
+                .build();
+    }
+
 
 }
