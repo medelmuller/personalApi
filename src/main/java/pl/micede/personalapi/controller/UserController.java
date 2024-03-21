@@ -1,2 +1,4 @@
-package pl.micede.personalapi.controller;public class UserController {
+package pl.micede.personalapi.controller;
+
+public class UserController {
 }

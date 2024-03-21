@@ -1,4 +1,4 @@
-package pl.micede.personalapi.controller;
+package pl.micede.personalapi.dto;
 
 import lombok.Builder;
 import lombok.Getter;

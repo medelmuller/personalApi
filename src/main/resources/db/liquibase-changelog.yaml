@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01_create_table_activity
+      author: postgres
+      changes:
+        - sqlFile:
+            path: scripts/01_create_table_activity.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+  - changeSet:
+      id: 02_create_table_user
+      author: postgres
+      changes:
+        - sqlFile:
+            path: scripts/02_create_table_user.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+  - changeSet:
+      id: 03_create_table_target
+      author: postgres
+      changes:
+        - sqlFile:
+            path: scripts/03_create_table_target.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+  - changeSet:
+      id: 04_create_table_habit
+      author: postgres
+      changes:
+        - sqlFile:
+            path: scripts/04_create_table_habit.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+  - changeSet:
+      id: 05_create_table_activities
+      author: postgres
+      changes:
+        - sqlFile:
+            path: scripts/05_create_table_activities.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

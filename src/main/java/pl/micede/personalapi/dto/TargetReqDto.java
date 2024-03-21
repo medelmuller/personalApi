@@ -9,12 +9,11 @@ import pl.micede.personalapi.model.HabitModel;
 import pl.micede.personalapi.model.TargetCategory;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-public class TargetRequestDto {
+public class TargetReqDto {
 
     @NotBlank
     private String targetName;
