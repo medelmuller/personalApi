@@ -22,6 +22,13 @@ public class TargetService {
     private final TargetRepository targetRepository;
     private final TargetMapper targetMapper;
 
+
+    /**
+     * Creates a new target using details provided in a TargetReqDto object.
+     *
+     * @param requestDto Data Transfer Object containing target details.
+     * @return The saved TargetModel entity.
+     */
     public TargetModel addNewTarget(TargetReqDto requestDto) {
         TargetModel targetModel = new TargetModel();
         targetModel.setTargetName(requestDto.getTargetName());
@@ -33,6 +40,14 @@ public class TargetService {
         return targetRepository.save(targetModel);
     }
 
+
+    /**
+     * Retrieves a specific target by its ID.
+     *
+     * @param id The ID of the target to be found.
+     * @throws TargetNotFoundException if target by its ID could not be found.
+     * @return A specific target mapped into DTO to read.
+     */
     public TargetReadDto getTargetById(Long id) {
         return targetRepository.findById(id)
                 .map(targetMapper::toDto)
@@ -40,6 +55,13 @@ public class TargetService {
     }
 
 
+    /**
+     * Retrieves all targets found by category.
+     *
+     * @param targetCategory Target Category by which targets are to be retrieved.
+     * @throws TargetNotFoundException if targets could not be found by the category.
+     * @return A list of TargetModel entities, mapped into read dto.
+     */
     public List<TargetReadDto> getTargetsByCategory(String targetCategory) {
         List<TargetReadDto> listOfTargets = targetRepository.findAllByTargetCategory(TargetCategory.valueOf(targetCategory))
                 .stream().map(targetMapper::toDto)
@@ -50,6 +72,15 @@ public class TargetService {
         return listOfTargets;
     }
 
+
+    /**
+     * Updates an existing target by its name with new ending date in a ReservationModel object.
+     *
+     * @param targetName The name of the target to be updated.
+     * @param newDate New ending date of the target.
+     * @throws TargetNotFoundException if targets could not be found by the name.
+     * @return The updated TargetModel entity mapped into read dto.
+     */
     public TargetReadDto updateTargetEndingDateByName(String targetName, LocalDateTime newDate) {
         Optional<TargetModel> byTargetName = targetRepository.findByTargetName(targetName);
         byTargetName.ifPresent(e -> e.setTargetEnds(newDate));
@@ -57,6 +88,13 @@ public class TargetService {
                 .orElseThrow(() -> new TargetNotFoundException(String.format("%s target not found", targetName)));
     }
 
+
+
+    /**
+     * Deletes a target from the database.
+     *
+     * @param id The ID of the target to be deleted.
+     */
     public void deleteTargetById(Long id) {
         if (!targetRepository.existsById(id)) {
             throw new TargetNotFoundException(String.format("%s target id not found", id));

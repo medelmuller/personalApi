@@ -7,6 +7,12 @@ import pl.micede.personalapi.model.ActivityModel;
 @Component
 public class ActivityMapper {
 
+    /**
+     * Converts a ActivityModel entity to a ActivityReadDto
+     *
+     * @param activityModel the activityModel entity to convert
+     * @return The converted ActivityReadDto
+     */
     public ActivityReadDto toDto(ActivityModel activityModel) {
         return ActivityReadDto.builder()
                 .activityName(activityModel.getActivityName())

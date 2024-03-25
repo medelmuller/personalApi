@@ -7,6 +7,12 @@ import pl.micede.personalapi.model.HabitModel;
 @Component
 public class HabitMapper {
 
+    /**
+     * Converts a HabitModel entity to a HabitReadDto
+     *
+     * @param habitModel the habitModel entity to convert
+     * @return The converted HabitReadDto
+     */
     public HabitReadDto toDto(HabitModel habitModel) {
         return HabitReadDto.builder()
                 .id(habitModel.getId())

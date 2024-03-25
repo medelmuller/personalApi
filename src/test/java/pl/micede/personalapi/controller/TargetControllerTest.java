@@ -3,6 +3,7 @@ package pl.micede.personalapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,10 +23,7 @@ import pl.micede.personalapi.utils.mapper.TargetMapper;
 import java.net.http.HttpClient;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.List;
 
-import static org.awaitility.Awaitility.given;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,9 +61,10 @@ class TargetControllerTest {
     void addNewTarget_shouldReturnCreatedTarget() throws Exception{
         //given
         TargetReqDto reqDto = targetMapper.toReqDto(targetModel);
-        Mockito.when(targetService.addNewTarget(reqDto)).thenReturn(targetModel);
+        BDDMockito.given(targetService.addNewTarget(reqDto)).willReturn(targetModel);
+//        Mockito.when(targetService.addNewTarget(reqDto)).thenReturn(targetModel);
         //when //then
-        mockMvc.perform(post("/target/add")
+        mockMvc.perform(post("/target/add",reqDto)
                 .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(reqDto))
@@ -76,9 +75,10 @@ class TargetControllerTest {
     @Test
     void getTargetById_ShouldGetTargetById() throws Exception {
         TargetReadDto dto = targetMapper.toDto(targetModel);
-        Mockito.when(targetService.getTargetById(targetModel.getId())).thenReturn(dto);
+        BDDMockito.given(targetService.getTargetById(targetModel.getId())).willReturn(dto);
+//        Mockito.when(targetService.getTargetById(targetModel.getId())).thenReturn(dto);
 
-        mockMvc.perform(get("/target/{id}", targetModel.getId()))
+        mockMvc.perform(get("/target/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(dto)));
 
