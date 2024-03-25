@@ -23,6 +23,13 @@ public class ActivityService {
     private final ActivityMapper activityMapper;
     private final HabitRepository habitRepository;
 
+    /**
+     * Creates a new activity using details provided in a ActivityReqDto object and connects it with chosen habits.
+     *
+     * @param activityDto Data Transfer Object containing activity details.
+     * @param habitId Habits ID
+     * @return The saved TargetModel entity.
+     */
     public ActivityModel addNewActivity(ActivityReqDto activityDto, Long habitId) {
         ActivityModel activityModel = new ActivityModel();
         activityModel.setActivityName(activityDto.getActivityName());

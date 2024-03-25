@@ -74,7 +74,7 @@ public class TargetService {
 
 
     /**
-     * Updates an existing target by its name with new ending date in a ReservationModel object.
+     * Updates an existing target by its name with new ending date in a TargetModel object.
      *
      * @param targetName The name of the target to be updated.
      * @param newDate New ending date of the target.
@@ -91,7 +91,7 @@ public class TargetService {
 
 
     /**
-     * Deletes a target from the database.
+     * Deletes a target from the database.activi
      *
      * @param id The ID of the target to be deleted.
      */

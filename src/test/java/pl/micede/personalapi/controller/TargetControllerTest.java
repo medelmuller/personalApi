@@ -1,5 +1,6 @@
 package pl.micede.personalapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,9 +24,13 @@ import pl.micede.personalapi.utils.mapper.TargetMapper;
 import java.net.http.HttpClient;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = TargetController.class)
@@ -37,8 +42,6 @@ class TargetControllerTest {
     @MockBean
     private TargetService targetService;
 
-    @Autowired
-    private TargetMapper targetMapper;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -53,46 +56,125 @@ class TargetControllerTest {
         targetModel.setTargetCategory(TargetCategory.KNOWLEDGE);
         targetModel.setTargetBegins(LocalDateTime.of(2024, Month.JUNE, 1, 12, 00));
         targetModel.setTargetEnds(LocalDateTime.of(2024, Month.JULY, 3, 12, 00));
-        targetModel.setHabits(null);
+        targetModel.setHabits(new ArrayList<>());
     }
 
 
     @Test
     void addNewTarget_shouldReturnCreatedTarget() throws Exception{
         //given
-        TargetReqDto reqDto = targetMapper.toReqDto(targetModel);
-        BDDMockito.given(targetService.addNewTarget(reqDto)).willReturn(targetModel);
-//        Mockito.when(targetService.addNewTarget(reqDto)).thenReturn(targetModel);
+        TargetReqDto reqDto = TargetReqDto.builder()
+                .targetName("Study")
+                .description("Study harder for final project")
+                .targetBegins(LocalDateTime.of(2024, Month.JUNE, 1, 12, 00))
+                .targetEnds(LocalDateTime.of(2024, Month.JULY, 3, 12, 00))
+                .targetCategory(TargetCategory.KNOWLEDGE)
+                .habits(new ArrayList<>())
+                .build();
+
+        // Symulacja działania serwisu
+        BDDMockito.when(targetService.addNewTarget(any(TargetReqDto.class))).thenReturn(new TargetModel());
         //when //then
-        mockMvc.perform(post("/target/add",reqDto)
+        mockMvc.perform(post("/target/add")
                 .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(reqDto))
-                ).andExpect(status().isCreated());
-//                .andExpect(content().json(objectMapper.writeValueAsString(targetModel)));
+                )
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(new TargetModel())));
     }
 
     @Test
     void getTargetById_ShouldGetTargetById() throws Exception {
-        TargetReadDto dto = targetMapper.toDto(targetModel);
-        BDDMockito.given(targetService.getTargetById(targetModel.getId())).willReturn(dto);
-//        Mockito.when(targetService.getTargetById(targetModel.getId())).thenReturn(dto);
 
-        mockMvc.perform(get("/target/{id}", 1L))
+        LocalDateTime targetBegins = LocalDateTime.of(2024, 6, 1, 12, 0);
+        LocalDateTime targetEnds = LocalDateTime.of(2024, 7, 3, 12, 0);
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        TargetReadDto dto = TargetReadDto.builder()
+//                .id(1L)
+                .targetName("Study")
+                .targetBegins(targetBegins.format(formatter))
+                .targetEnds(targetEnds.format(formatter))
+                .description("Study harder for final project")
+                .targetCategory(TargetCategory.KNOWLEDGE)
+                .habits(new ArrayList<>())
+                .build();
+        BDDMockito.when(targetService.getTargetById(any(Long.class))).thenReturn(dto);
+
+        mockMvc.perform(get("/target/{id}", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(dto)));
+    }
+
+    @Test
+    void getTargetsByCategory_shouldGetTargetByCategory() throws Exception {
+
+        LocalDateTime targetBegins = LocalDateTime.of(2024, 6, 1, 12, 0);
+        LocalDateTime targetEnds = LocalDateTime.of(2024, 7, 3, 12, 0);
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        TargetReadDto dto = TargetReadDto.builder()
+//                .id(1L)
+                .targetName("Study")
+                .targetBegins(targetBegins.format(formatter))
+                .targetEnds(targetEnds.format(formatter))
+                .description("description")
+                .targetCategory(TargetCategory.KNOWLEDGE)
+                .habits(new ArrayList<>())
+                .build();
+
+        List<TargetReadDto> list = new ArrayList<>();
+        list.add(dto);
+
+        BDDMockito.given(targetService.getTargetsByCategory(String.valueOf(any(TargetCategory.class)))).willReturn(list);
+
+        mockMvc.perform(get("/targetsByCategory/{targetCategory}", "KNOWLEDGE")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(list)));
+
+    }
+
+    @Test
+    void updateTargetEndingDateByName_shouldUpdateTargetEndingDateByName() throws Exception {
+        LocalDateTime targetEnds = LocalDateTime.of(2024, 7, 3, 12, 0);
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        String formattedNewDate = targetEnds.format(formatter);
+        TargetReadDto dto = TargetReadDto.builder()
+                .id(1L)
+                .targetName("Study")
+                .targetBegins("2024-06-22")
+                .targetEnds("2024-07-30")
+                .description("description")
+                .targetCategory(TargetCategory.KNOWLEDGE)
+                .habits(new ArrayList<>())
+                .build();
+
+        BDDMockito.given(targetService.updateTargetEndingDateByName(any(String.class), any(LocalDateTime.class))).willReturn(dto);
+
+        mockMvc.perform(patch("/target/updateEndingDate/{targetName}?new-date", "Study")
+                        .param("newDate", formattedNewDate)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(dto)));
 
     }
 
     @Test
-    void getTargetsByCategory() {
-    }
+    void deleteTargetById_shouldDeleteTargetById() throws Exception {
 
-    @Test
-    void updateTargetEndingDateByName() {
-    }
+        Long id = 1L;
 
-    @Test
-    void deleteTargetById() {
+        BDDMockito.doNothing().when(targetService).deleteTargetById(id);
+
+        mockMvc.perform(delete("/target/delete/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
     }
 }
