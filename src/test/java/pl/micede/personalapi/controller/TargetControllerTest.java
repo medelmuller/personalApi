@@ -1,27 +1,20 @@
 package pl.micede.personalapi.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import pl.micede.personalapi.dto.TargetReadDto;
 import pl.micede.personalapi.dto.TargetReqDto;
-import pl.micede.personalapi.model.HabitModel;
 import pl.micede.personalapi.model.TargetCategory;
 import pl.micede.personalapi.model.TargetModel;
 import pl.micede.personalapi.service.TargetService;
-import pl.micede.personalapi.utils.mapper.TargetMapper;
 
-import java.net.http.HttpClient;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -46,16 +39,15 @@ class TargetControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private TargetModel targetModel;
     @BeforeEach
     void setUp() {
-        targetModel = new TargetModel();
+        TargetModel targetModel = new TargetModel();
         targetModel.setId(1L);
         targetModel.setTargetName("Study");
         targetModel.setDescription("Study harder for final project");
         targetModel.setTargetCategory(TargetCategory.KNOWLEDGE);
-        targetModel.setTargetBegins(LocalDateTime.of(2024, Month.JUNE, 1, 12, 00));
-        targetModel.setTargetEnds(LocalDateTime.of(2024, Month.JULY, 3, 12, 00));
+        targetModel.setTargetBegins(LocalDateTime.of(2024, Month.JUNE, 1, 12, 0));
+        targetModel.setTargetEnds(LocalDateTime.of(2024, Month.JULY, 3, 12, 0));
         targetModel.setHabits(new ArrayList<>());
     }
 
@@ -66,8 +58,8 @@ class TargetControllerTest {
         TargetReqDto reqDto = TargetReqDto.builder()
                 .targetName("Study")
                 .description("Study harder for final project")
-                .targetBegins(LocalDateTime.of(2024, Month.JUNE, 1, 12, 00))
-                .targetEnds(LocalDateTime.of(2024, Month.JULY, 3, 12, 00))
+                .targetBegins(LocalDateTime.of(2024, Month.JUNE, 1, 12, 0))
+                .targetEnds(LocalDateTime.of(2024, Month.JULY, 3, 12, 0))
                 .targetCategory(TargetCategory.KNOWLEDGE)
                 .habits(new ArrayList<>())
                 .build();
@@ -86,13 +78,12 @@ class TargetControllerTest {
 
     @Test
     void getTargetById_ShouldGetTargetById() throws Exception {
-
+        //given
         LocalDateTime targetBegins = LocalDateTime.of(2024, 6, 1, 12, 0);
         LocalDateTime targetEnds = LocalDateTime.of(2024, 7, 3, 12, 0);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
         TargetReadDto dto = TargetReadDto.builder()
-//                .id(1L)
                 .targetName("Study")
                 .targetBegins(targetBegins.format(formatter))
                 .targetEnds(targetEnds.format(formatter))
@@ -100,8 +91,9 @@ class TargetControllerTest {
                 .targetCategory(TargetCategory.KNOWLEDGE)
                 .habits(new ArrayList<>())
                 .build();
+        //when
         BDDMockito.when(targetService.getTargetById(any(Long.class))).thenReturn(dto);
-
+        //then
         mockMvc.perform(get("/target/{id}", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -110,13 +102,12 @@ class TargetControllerTest {
 
     @Test
     void getTargetsByCategory_shouldGetTargetByCategory() throws Exception {
-
+        //given
         LocalDateTime targetBegins = LocalDateTime.of(2024, 6, 1, 12, 0);
         LocalDateTime targetEnds = LocalDateTime.of(2024, 7, 3, 12, 0);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
         TargetReadDto dto = TargetReadDto.builder()
-//                .id(1L)
                 .targetName("Study")
                 .targetBegins(targetBegins.format(formatter))
                 .targetEnds(targetEnds.format(formatter))
@@ -128,8 +119,9 @@ class TargetControllerTest {
         List<TargetReadDto> list = new ArrayList<>();
         list.add(dto);
 
-        BDDMockito.given(targetService.getTargetsByCategory(String.valueOf(any(TargetCategory.class)))).willReturn(list);
-
+        //when
+        BDDMockito.when(targetService.getTargetsByCategory(String.valueOf(any(TargetCategory.class)))).thenReturn(list);
+        //then
         mockMvc.perform(get("/targetsByCategory/{targetCategory}", "KNOWLEDGE")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -140,6 +132,7 @@ class TargetControllerTest {
 
     @Test
     void updateTargetEndingDateByName_shouldUpdateTargetEndingDateByName() throws Exception {
+        //given
         LocalDateTime targetEnds = LocalDateTime.of(2024, 7, 3, 12, 0);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         String formattedNewDate = targetEnds.format(formatter);
@@ -153,8 +146,9 @@ class TargetControllerTest {
                 .habits(new ArrayList<>())
                 .build();
 
+        //when
         BDDMockito.given(targetService.updateTargetEndingDateByName(any(String.class), any(LocalDateTime.class))).willReturn(dto);
-
+        //then
         mockMvc.perform(patch("/target/updateEndingDate/{targetName}?new-date", "Study")
                         .param("newDate", formattedNewDate)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -167,11 +161,11 @@ class TargetControllerTest {
 
     @Test
     void deleteTargetById_shouldDeleteTargetById() throws Exception {
-
+        //given
         Long id = 1L;
-
+        //when
         BDDMockito.doNothing().when(targetService).deleteTargetById(id);
-
+        //then
         mockMvc.perform(delete("/target/delete/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());

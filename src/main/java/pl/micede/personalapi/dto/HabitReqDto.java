@@ -2,6 +2,7 @@ package pl.micede.personalapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import pl.micede.personalapi.model.ActivityModel;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 public class HabitReqDto {
 
     @NotBlank
