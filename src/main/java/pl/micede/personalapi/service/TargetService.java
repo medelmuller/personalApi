@@ -1,6 +1,7 @@
 package pl.micede.personalapi.service;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.micede.personalapi.dto.TargetReadDto;
 import pl.micede.personalapi.dto.TargetReqDto;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 public class TargetService {
 
     private final TargetRepository targetRepository;
-    private final TargetMapper targetMapper;
+    private final TargetMapper targetMapper = new TargetMapper();
 
 
     /**
@@ -94,7 +95,7 @@ public class TargetService {
 
 
     /**
-     * Deletes a target from the database.activi
+     * Deletes a target from the database.
      *
      * @param id The ID of the target to be deleted.
      */

@@ -1,8 +1,6 @@
 package pl.micede.personalapi.utils.mapper;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Component;
 import pl.micede.personalapi.dto.TargetReadDto;
 import pl.micede.personalapi.dto.TargetReqDto;
@@ -20,6 +18,7 @@ public class TargetMapper {
      * @param model the targetModel entity to convert
      * @return The converted TargetReadDto
      */
+
     public TargetReadDto toDto(TargetModel model) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String startingDateFormatted = model.getTargetBegins().format(formatter);
@@ -32,41 +31,6 @@ public class TargetMapper {
                 .targetEnds(endingDateFormatted)
                 .targetCategory(model.getTargetCategory())
                 .habits(model.getHabits())
-                .build();
-    }
-
-    /**
-     * Converts a TargetReqDto entity to a TargetModel.
-     *
-     * @param reqDto the targetRequestDto entity to convert
-     * @return The converted TargetModel
-     */
-    public TargetModel toModel(TargetReqDto reqDto) {
-        return TargetModel.builder()
-                .targetName(reqDto.getTargetName())
-                .description(reqDto.getDescription())
-                .targetCategory(reqDto.getTargetCategory())
-                .targetBegins(reqDto.getTargetBegins())
-                .targetEnds(reqDto.getTargetEnds())
-                .habits(reqDto.getHabits())
-                .build();
-    }
-
-
-    /**
-     * Converts a TargetModel entity to a TargetReqDto
-     *
-     * @param targetModel the targetModel entity to convert
-     * @return The converted TargetReqDto
-     */
-    public TargetReqDto toReqDto(TargetModel targetModel) {
-        return TargetReqDto.builder()
-                .targetName(targetModel.getTargetName())
-                .description(targetModel.getDescription())
-                .targetCategory(targetModel.getTargetCategory())
-                .targetBegins(targetModel.getTargetBegins())
-                .targetEnds(targetModel.getTargetEnds())
-                .habits(targetModel.getHabits())
                 .build();
     }
 

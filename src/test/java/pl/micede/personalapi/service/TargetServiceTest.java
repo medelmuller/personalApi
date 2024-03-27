@@ -3,7 +3,6 @@ package pl.micede.personalapi.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -12,16 +11,15 @@ import pl.micede.personalapi.dto.TargetReqDto;
 import pl.micede.personalapi.model.TargetCategory;
 import pl.micede.personalapi.model.TargetModel;
 import pl.micede.personalapi.repository.TargetRepository;
-import pl.micede.personalapi.utils.mapper.TargetMapper;
+import pl.micede.personalapi.utils.exception.TargetNotFoundException;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -33,7 +31,7 @@ class TargetServiceTest {
     @Mock
     private TargetRepository targetRepository;
 
-//    @InjectMocks
+//    @Mock
 //    private TargetMapper targetMapper;
 
     @Mock
@@ -53,58 +51,131 @@ class TargetServiceTest {
                 .targetEnds(LocalDateTime.of(2024, Month.JULY, 3, 12, 0))
                 .habits(new ArrayList<>())
                 .build();
-
     }
 
     @Test
     void addNewTarget_ShouldSaveNewTarget() {
-        TargetModel targetModel = new TargetModel();
-        targetModel.setTargetName(reqDto.getTargetName());
-        targetModel.setDescription(reqDto.getDescription());
-        targetModel.setTargetBegins(reqDto.getTargetBegins());
-        targetModel.setTargetEnds(reqDto.getTargetEnds());
-        targetModel.setTargetCategory(reqDto.getTargetCategory());
-        targetModel.setHabits(reqDto.getHabits());
-
-
-//        BDDMockito.when(targetRepository.save(targetModel)).thenReturn(new TargetModel());
-
+        //given
         targetService.addNewTarget(reqDto);
+        //when //then
         verify(targetRepository).save(any(TargetModel.class));
     }
 
     @Test
     void getTargetById_ShouldFindTargetById() {
+        //given
         Long id = 1L;
-        TargetModel targetModel = new TargetModel();
-//        targetModel.setId(id);
-        targetModel.setTargetName(reqDto.getTargetName());
-        targetModel.setDescription(reqDto.getDescription());
-        targetModel.setTargetBegins(reqDto.getTargetBegins());
-        targetModel.setTargetEnds(reqDto.getTargetEnds());
-        targetModel.setTargetCategory(reqDto.getTargetCategory());
-        targetModel.setHabits(reqDto.getHabits());
-
-        TargetReadDto readDto = new TargetReadDto(targetModel.getId(), targetModel.getTargetName(), targetModel.getDescription(), "", "", TargetCategory.KNOWLEDGE, targetModel.getHabits());
-
-//        when(targetRepository.save(any(TargetModel.class))).thenReturn(targetModel);
+        TargetModel targetModel = getTestModel();
+//        TargetReadDto readDto = new TargetReadDto(targetModel.getId(), targetModel.getTargetName(), targetModel.getDescription(), "", "", TargetCategory.KNOWLEDGE, targetModel.getHabits());
+        //when
         when(targetRepository.findById(id)).thenReturn(Optional.of(targetModel));
 //        when(targetMapper.toDto(any(TargetModel.class))).thenReturn(readDto);
-
-
-
         TargetReadDto result = targetService.getTargetById(id);
+
+        //then
         assertEquals(targetModel.getId(), result.getId());
     }
 
     @Test
     void getTargetById_ShouldThrowAnException() {
+        //given
+        Long id = 1L;
+
+        //when
+        when(targetRepository.findById(id)).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(TargetNotFoundException.class, () -> targetService.getTargetById(id));
+
+    }
+
+
+    @Test
+    void getTargetsByCategory_ShouldGetListOfTargetsByCategory() {
+        //given
+        TargetCategory category = TargetCategory.KNOWLEDGE;
+        TargetModel targetModel = getTestModel();
+//        TargetReadDto readDto = new TargetReadDto(targetModel.getId(), targetModel.getTargetName(), targetModel.getDescription(), "", "", TargetCategory.KNOWLEDGE, targetModel.getHabits());
+
+        //when
+        when(targetRepository.findAllByTargetCategory(category)).thenReturn(List.of(targetModel));
+//        when(targetMapper.toDto(any(TargetModel.class))).thenReturn(readDto);
+        List<TargetReadDto> result = targetService.getTargetsByCategory(String.valueOf(category));
+
+        //then
+        assertEquals(targetModel.getId() , result.get(0).getId());
+    }
+
+    @Test
+    void getTargetsByCategory_ShouldThrowAnException() {
+        //given
+        TargetCategory category = TargetCategory.KNOWLEDGE;
+
+        //when
+        when(targetRepository.findAllByTargetCategory(category)).thenReturn(emptyList());
+
+        //then
+        assertThrows(TargetNotFoundException.class, () -> targetService.getTargetsByCategory(String.valueOf(category)));
+
+    }
+    @Test
+    void updateTargetEndingDateByName() {
+        //given
+        TargetModel testModel = getTestModel();
+        String targetName = "Study";
+        LocalDateTime newDate = LocalDateTime.now().plusDays(2);
+
+        //when
+        when(targetRepository.findByTargetName(targetName)).thenReturn(Optional.of(testModel));
+        TargetReadDto result = targetService.updateTargetEndingDateByName(targetName, newDate);
+
+        //then
+//        assertEquals(newDate, result.getTargetEnds());
+        assertTrue(newDate.toString().contains(result.getTargetEnds()));
+
 
     }
 
     @Test
-    void getTargetsByCategory() {
-        TargetCategory category = TargetCategory.KNOWLEDGE;
+    void updateTargetEndingDateByName_ShouldThrowAnException() {
+        //given
+        String targetName = "Study";
+        LocalDateTime newDate = LocalDateTime.now().plusDays(2);
+
+        //when
+        when(targetRepository.findByTargetName(targetName)).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(TargetNotFoundException.class, () -> targetService.updateTargetEndingDateByName(targetName, newDate));
+    }
+
+    @Test
+    void deleteTargetById() {
+        //given
+        Long id = 1L;
+
+        //when
+        when(targetRepository.existsById(id)).thenReturn(true);
+
+        targetService.deleteTargetById(id);
+
+        //then
+        verify(targetRepository).deleteById(id);
+    }
+
+    @Test
+    void deleteTargetById_ShouldThrowAnException() {
+        //given
+        Long id = 1L;
+
+        //when
+        when(targetRepository.existsById(id)).thenReturn(false);
+
+        //then
+        assertThrows(TargetNotFoundException.class, () -> targetService.deleteTargetById(id));
+    }
+
+    private TargetModel getTestModel() {
         TargetModel targetModel = new TargetModel();
         targetModel.setTargetName(reqDto.getTargetName());
         targetModel.setDescription(reqDto.getDescription());
@@ -112,25 +183,6 @@ class TargetServiceTest {
         targetModel.setTargetEnds(reqDto.getTargetEnds());
         targetModel.setTargetCategory(reqDto.getTargetCategory());
         targetModel.setHabits(reqDto.getHabits());
-
-
-//        List<TargetReadDto> collect = Stream.of(targetModel).map(targetMapper::toDto).collect(Collectors.toList());
-
-        when(targetRepository.findAllByTargetCategory(category)).thenReturn(List.of(targetModel));
-        when(targetRepository.save(any(TargetModel.class))).thenReturn(targetModel);
-
-        List<TargetReadDto> result = targetService.getTargetsByCategory(String.valueOf(category));
-
-
-
-//        assertEquals(collect , result);
-    }
-
-    @Test
-    void updateTargetEndingDateByName() {
-    }
-
-    @Test
-    void deleteTargetById() {
+        return targetModel;
     }
 }
