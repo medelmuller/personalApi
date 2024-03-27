@@ -49,9 +49,12 @@ public class TargetService {
      * @return A specific target mapped into DTO to read.
      */
     public TargetReadDto getTargetById(Long id) {
-        return targetRepository.findById(id)
-                .map(targetMapper::toDto)
-                .orElseThrow(() -> new TargetNotFoundException("Target entity not found"));
+        Optional<TargetModel> optModel = targetRepository.findById(id);
+        if (optModel.isPresent()) {
+            return targetMapper.toDto(optModel.get());
+        } else {
+            throw new TargetNotFoundException("Target entity not found");
+        }
     }
 
 

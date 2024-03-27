@@ -1,6 +1,7 @@
 package pl.micede.personalapi.utils.mapper;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.micede.personalapi.dto.TargetReadDto;
@@ -11,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 @AllArgsConstructor
-
 public class TargetMapper {
 
     /**
