@@ -20,7 +20,7 @@ public class HabitService {
 
     private final HabitRepository habitRepository;
     private final TargetRepository targetRepository;
-    private final HabitMapper habitMapper;
+    private final HabitMapper habitMapper = new HabitMapper();
 
     /**
      * Creates a new habit using details provided in a HabitReqDto object and connects it with selected Target.
