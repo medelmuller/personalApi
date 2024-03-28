@@ -20,7 +20,7 @@ import java.util.Optional;
 public class ActivityService {
 
     private final ActivityRepository activityRepository;
-    private final ActivityMapper activityMapper;
+    private final ActivityMapper activityMapper = new ActivityMapper();
     private final HabitRepository habitRepository;
 
     /**

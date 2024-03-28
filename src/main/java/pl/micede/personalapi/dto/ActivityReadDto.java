@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ActivityReadDto {
+    private Long id;
 
     private String activityName;
 

@@ -15,6 +15,7 @@ public class ActivityMapper {
      */
     public ActivityReadDto toDto(ActivityModel activityModel) {
         return ActivityReadDto.builder()
+                .id(activityModel.getId())
                 .activityName(activityModel.getActivityName())
                 .activityDescription(activityModel.getActivityDescription())
                 .build();

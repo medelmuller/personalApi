@@ -71,7 +71,7 @@ class HabitServiceTest {
     }
 
     @Test
-    void findById() {
+    void findById_ShouldFindHabitById() {
         //given
         Long id = 1L;
         HabitModel habitModel = getHabitModel();
@@ -97,7 +97,7 @@ class HabitServiceTest {
     }
 
     @Test
-    void findByName() {
+    void findByName_ShouldFindHabitByName() {
         //given
         String habitName = "Reading Java book";
         HabitModel habitModel = getHabitModel();
@@ -123,7 +123,7 @@ class HabitServiceTest {
     }
 
     @Test
-    void updateDescriptionById() {
+    void updateDescriptionById_ShouldUpdateHabitsDescriptionById() {
         //given
         Long id = 1L;
         String newDescription = "Reading Java book for 1 hour";
@@ -147,7 +147,7 @@ class HabitServiceTest {
     }
 
     @Test
-    void deleteById() {
+    void deleteById_ShouldDeleteHabitById() {
         //given
         Long id = 1L;
         //when
