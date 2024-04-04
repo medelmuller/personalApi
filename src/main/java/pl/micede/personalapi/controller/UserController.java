@@ -22,4 +22,10 @@ public class UserController {
         return new ResponseEntity<>(userModel, HttpStatus.CREATED);
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<UserModel> getUserById(@Valid @PathVariable Long id) {
+        UserModel userById = userService.getUserById(id);
+        return ResponseEntity.ok(userById);
+    }
+
 }

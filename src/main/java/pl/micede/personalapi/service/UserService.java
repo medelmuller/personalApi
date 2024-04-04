@@ -6,6 +6,7 @@ import pl.micede.personalapi.dto.UserReqDto;
 import pl.micede.personalapi.model.UserModel;
 import pl.micede.personalapi.repository.UserRepository;
 import pl.micede.personalapi.utils.exception.UserAlreadyExistsException;
+import pl.micede.personalapi.utils.exception.UserNotFoundException;
 
 @Service
 @Data
@@ -23,6 +24,13 @@ public class UserService {
         } else {
             throw new UserAlreadyExistsException(String.format("User by %s login already exists", userReqDto.getLogin()));
         }
+
+    }
+
+    public UserModel getUserById(Long id) {
+
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User by %d ID not found", id)));
 
     }
 }
