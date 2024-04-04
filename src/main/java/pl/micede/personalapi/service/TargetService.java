@@ -1,7 +1,6 @@
 package pl.micede.personalapi.service;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.micede.personalapi.dto.TargetReadDto;
 import pl.micede.personalapi.dto.TargetReqDto;

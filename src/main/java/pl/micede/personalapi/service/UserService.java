@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import pl.micede.personalapi.dto.UserReqDto;
 import pl.micede.personalapi.model.UserModel;
 import pl.micede.personalapi.repository.UserRepository;
-import pl.micede.personalapi.utils.exception.TargetNotFoundException;
 import pl.micede.personalapi.utils.exception.UserAlreadyExistsException;
 import pl.micede.personalapi.utils.exception.UserNotFoundException;
 
