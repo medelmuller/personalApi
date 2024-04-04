@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.micede.personalapi.utils.exception.ActivityNotFoundException;
 import pl.micede.personalapi.utils.exception.HabitNotFoundException;
 import pl.micede.personalapi.utils.exception.TargetNotFoundException;
+import pl.micede.personalapi.utils.exception.UserAlreadyExistsException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -24,6 +25,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ActivityNotFoundException.class)
     public ResponseEntity<Object> handleActivityNotFound(ActivityNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Object> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
 }

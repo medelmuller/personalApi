@@ -8,14 +8,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.micede.personalapi.dto.ActivityReadDto;
 import pl.micede.personalapi.dto.ActivityReqDto;
-import pl.micede.personalapi.dto.HabitReqDto;
 import pl.micede.personalapi.model.ActivityModel;
-import pl.micede.personalapi.model.FrequencyType;
 import pl.micede.personalapi.model.HabitModel;
-import pl.micede.personalapi.model.TargetModel;
 import pl.micede.personalapi.repository.ActivityRepository;
 import pl.micede.personalapi.repository.HabitRepository;
-import pl.micede.personalapi.repository.TargetRepository;
 import pl.micede.personalapi.utils.exception.ActivityNotFoundException;
 import pl.micede.personalapi.utils.exception.HabitNotFoundException;
 
@@ -113,7 +109,6 @@ class ActivityServiceTest {
         //given
         Long id = 1L;
         String newDescription = "Reading articles";
-        ActivityModel activityModel = getActivityModel();
         //when
         when(activityRepository.findById(id)).thenReturn(Optional.empty());
         //then
