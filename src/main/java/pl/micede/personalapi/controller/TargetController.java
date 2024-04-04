@@ -1,5 +1,6 @@
 package pl.micede.personalapi.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class TargetController {
      * @param requestDto The target data transfer object containing the target details.
      * @return ResponseEntity containing the saved TargetModel object and http status Created.
      */
+    @Operation(summary = "Create Target", description = "Creates a new Target based on the provided data")
     @PostMapping("/add")
     public ResponseEntity<TargetModel> addNewTarget(@Valid @RequestBody TargetReqDto requestDto) {
         TargetModel targetModel = targetService.addNewTarget(requestDto);
@@ -39,6 +41,7 @@ public class TargetController {
      * @param id The ID of the target to retrieve.
      * @return ResponseEntity containing the TargetReadDto if object is found.
      */
+    @Operation(summary = "Get Target by ID", description = "Retrieves target by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<TargetReadDto> getTargetById(@Valid @PathVariable Long id){
         TargetReadDto targetById = targetService.getTargetById(id);
@@ -51,6 +54,7 @@ public class TargetController {
      * @param targetCategory The category of the targets to retrieve.
      * @return ResponseEntity containing the TargetReadDto if objects are found.
      */
+    @Operation(summary = "Get Target by Category", description = "Retrieves all users by theirs Category")
     @GetMapping("/targetsByCategory/{targetCategory}")
     public ResponseEntity<List<TargetReadDto>> getTargetsByCategory(@Valid @PathVariable String targetCategory){
         List<TargetReadDto> targetsByCategory = targetService.getTargetsByCategory(targetCategory);
@@ -65,6 +69,7 @@ public class TargetController {
      * @param newDate New ending date for target update provided in request param.
      * @return ResponseEntity containing the updated TargetReadDto if object is found.
      */
+    @Operation(summary = "Update Target", description = "Updates an existing target with new data")
     @PatchMapping("/updateEndingDate/{targetName}")
     public ResponseEntity<TargetReadDto> updateTargetEndingDateByName(@Valid @PathVariable String targetName, @RequestParam LocalDateTime newDate) {
         TargetReadDto targetReadDto = targetService.updateTargetEndingDateByName(targetName, newDate);
@@ -77,6 +82,7 @@ public class TargetController {
      * @param id The ID of the target to retrieve.
      * @return ResponseEntity with NO_CONTENT status if the deletion was successful.
      */
+    @Operation(summary = "Delete Target", description = "Deletes target by its ID")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteTargetById(@Valid @PathVariable Long id){
         targetService.deleteTargetById(id);

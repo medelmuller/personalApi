@@ -5,14 +5,25 @@ import org.springframework.stereotype.Service;
 import pl.micede.personalapi.dto.UserReqDto;
 import pl.micede.personalapi.model.UserModel;
 import pl.micede.personalapi.repository.UserRepository;
+import pl.micede.personalapi.utils.exception.TargetNotFoundException;
 import pl.micede.personalapi.utils.exception.UserAlreadyExistsException;
 import pl.micede.personalapi.utils.exception.UserNotFoundException;
+
+import java.util.Optional;
 
 @Service
 @Data
 public class UserService {
 
     private final UserRepository userRepository;
+
+    /**
+     * Creates a new user using details provided in a UserReqDto object.
+     *
+     * @param userReqDto Data Transfer Object containing user details.
+     * @return The saved TargetModel entity.
+     * @throws UserAlreadyExistsException if UserModel already exists in database.
+     */
     public UserModel addNewUser(UserReqDto userReqDto) {
         UserModel userModel = new UserModel();
         boolean exists = userRepository.existsByLogin(userReqDto.getLogin());
@@ -27,10 +38,46 @@ public class UserService {
 
     }
 
+
+    /**
+     * Retrieves a specific User by its ID.
+     *
+     * @param id The ID of the user to be found.
+     * @throws UserNotFoundException if user by its ID could not be found.
+     * @return A specific UserModel found by ID.
+     */
     public UserModel getUserById(Long id) {
 
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User by %d ID not found", id)));
+    }
 
+
+    /**
+     * Updates an existing User by its login with new password in a UserModel object.
+     *
+     * @param login The login of the user to be updated.
+     * @param password New password of the user.
+     * @throws UserNotFoundException if user could not be found by the login.
+     * @return The updated UserModel entity.
+     */
+    public UserModel updateUserPasswordByLogin(String login, String password) {
+        Optional<UserModel> userByLogin = userRepository.findByLogin(login);
+        userByLogin.ifPresent(u -> u.setPassword(password));
+        return userByLogin
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with %s login not found", login)));
+    }
+
+
+    /**
+     * Deletes a User from the database.
+     *
+     * @param id The ID of the user to be deleted.
+     */
+    public void deleteUserById(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User not found");
+        }
+        userRepository.deleteById(id);
     }
 }
