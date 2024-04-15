@@ -5,9 +5,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.micede.personalapi.config.configuration.AdminConfiguration;
 import pl.micede.personalapi.dto.UserReqDto;
 import pl.micede.personalapi.model.UserModel;
 import pl.micede.personalapi.service.UserService;
@@ -18,7 +18,6 @@ import pl.micede.personalapi.service.UserService;
 public class UserController {
 
     private final UserService userService;
-
 
     /**
      * Creates a new User based on the provided UserReqDto object.
