@@ -1,7 +1,9 @@
 package pl.micede.personalapi.service;
 
 import lombok.Data;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import pl.micede.personalapi.config.security.SecurityConfig;
 import pl.micede.personalapi.dto.UserReqDto;
 import pl.micede.personalapi.model.UserModel;
 import pl.micede.personalapi.repository.UserRepository;
@@ -29,7 +31,6 @@ public class UserService {
         if (!exists) {
             userModel.setLogin(userReqDto.getLogin());
             userModel.setPassword(userReqDto.getPassword());
-            userModel.setTargets(userReqDto.getTargets());
             return userRepository.save(userModel);
         } else {
             throw new UserAlreadyExistsException(String.format("User by %s login already exists", userReqDto.getLogin()));
@@ -78,5 +79,23 @@ public class UserService {
             throw new UserNotFoundException("User not found");
         }
         userRepository.deleteById(id);
+    }
+
+
+    public boolean authenticateUser(UserReqDto dto) {
+        UserModel byLogin = userRepository.findByLogin(dto.getLogin())
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with %s login not found", dto.getLogin())));
+        return dto.getPassword().equals(byLogin.getPassword());
+    }
+
+    public void saveInMemoryUsers(UserDetails admin, UserDetails user) {
+        UserModel adminModel = new UserModel();
+        adminModel.setLogin(admin.getUsername());
+        adminModel.setPassword(admin.getPassword());
+        UserModel userModel = new UserModel();
+        userModel.setLogin(user.getUsername());
+        userModel.setPassword(user.getPassword());
+        userRepository.save(adminModel);
+        userRepository.save(userModel);
     }
 }

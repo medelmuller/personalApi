@@ -19,6 +19,4 @@ public class UserReqDto {
     @NotBlank
     private String password;
 
-    private List<TargetModel> targets;
-
 }
