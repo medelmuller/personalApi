@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,7 +25,7 @@ import pl.micede.personalapi.service.UserService;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -38,13 +39,6 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(autz ->
-                        autz
-                                .requestMatchers("/**").permitAll()
-                                .requestMatchers("/user/delete/").hasRole("ADMIN")
-
-                )
-
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
@@ -61,13 +55,8 @@ public class SecurityConfig {
                 .password(encoder().encode("admin"))
                 .roles("ADMIN")
                 .build();
-        UserDetails user = User.builder()
-                .username("User")
-                .password(encoder().encode("user"))
-                .roles("USER")
-                .build();
-        userService.saveInMemoryUsers(admin, user);
-        return new InMemoryUserDetailsManager(admin, user);
+        userService.saveInMemoryUsers(admin);
+        return new InMemoryUserDetailsManager(admin);
     }
 
     @Bean

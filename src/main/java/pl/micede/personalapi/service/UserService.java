@@ -88,14 +88,10 @@ public class UserService {
         return dto.getPassword().equals(byLogin.getPassword());
     }
 
-    public void saveInMemoryUsers(UserDetails admin, UserDetails user) {
+    public void saveInMemoryUsers(UserDetails admin) {
         UserModel adminModel = new UserModel();
         adminModel.setLogin(admin.getUsername());
         adminModel.setPassword(admin.getPassword());
-        UserModel userModel = new UserModel();
-        userModel.setLogin(user.getUsername());
-        userModel.setPassword(user.getPassword());
         userRepository.save(adminModel);
-        userRepository.save(userModel);
     }
 }

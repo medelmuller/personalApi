@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pl.micede.personalapi.model.HabitModel;
 import pl.micede.personalapi.model.TargetCategory;
+import pl.micede.personalapi.model.UserModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +35,8 @@ public class TargetReqDto {
 
 
     private List<HabitModel> habits;
+
+    private UserModel user;
 
 
 }

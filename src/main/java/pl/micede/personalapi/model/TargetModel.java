@@ -1,5 +1,6 @@
 package pl.micede.personalapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +20,6 @@ public class TargetModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "target_id")
     private Long id;
 
 
@@ -45,5 +45,6 @@ public class TargetModel {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private UserModel user;
 }

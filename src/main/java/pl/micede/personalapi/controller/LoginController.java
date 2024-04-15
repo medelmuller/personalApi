@@ -18,7 +18,6 @@ public class LoginController {
         private final AuthenticationManager authenticationManager;
         private final UserService userService;
 
-
         @PostMapping("/login")
         public ResponseEntity<Void> loginWithUserData(@Valid @RequestBody UserReqDto dto) {
             if (userService.authenticateUser(dto)) {

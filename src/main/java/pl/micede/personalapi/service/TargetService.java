@@ -37,6 +37,7 @@ public class TargetService {
         targetModel.setTargetEnds(requestDto.getTargetEnds());
         targetModel.setTargetCategory(requestDto.getTargetCategory());
         targetModel.setHabits(requestDto.getHabits());
+        targetModel.setUser(requestDto.getUser());
         return targetRepository.save(targetModel);
     }
 

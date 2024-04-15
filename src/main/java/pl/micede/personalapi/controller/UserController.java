@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.micede.personalapi.dto.UserReqDto;
 import pl.micede.personalapi.model.UserModel;
@@ -67,6 +69,7 @@ public class UserController {
      * @return ResponseEntity with NO_CONTENT status if the deletion was successful.
      */
     @Operation(summary = "Delete User", description = "Deletes user by its ID")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUserById(@Valid @PathVariable Long id) {
         userService.deleteUserById(id);
