@@ -44,3 +44,39 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: true
             stripComments: true
+#  - changeSet:
+#      id: 01_insert_into_activity
+#      author: postgres
+#      changes:
+#        - sqlFile:
+#            path: scripts/01_insert_into_activity.sql
+#            relativeToChangelogFile: true
+#            splitStatements: true
+#            stripComments: true
+#        - changeSet:
+#            id: 02_insert_into_user
+#            author: postgres
+#            changes:
+#              - sqlFile:
+#                  path: scripts/02_insert_into_user.sql
+#                  relativeToChangelogFile: true
+#                  splitStatements: true
+#                  stripComments: true
+#        - changeSet:
+#            id: 03_insert_into_target
+#            author: postgres
+#            changes:
+#              - sqlFile:
+#                  path: scripts/03_insert_into_target.sql
+#                  relativeToChangelogFile: true
+#                  splitStatements: true
+#                  stripComments: true
+#        - changeSet:
+#            id: 04_insert_into_habit
+#            author: postgres
+#            changes:
+#              - sqlFile:
+#                  path: scripts/04_insert_into_habit.sql
+#                  relativeToChangelogFile: true
+#                  splitStatements: true
+#                  stripComments: true
