@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import pl.micede.personalapi.model.TargetModel;
+import pl.micede.personalapi.utils.validator.PasswordStrengthChecker;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class UserReqDto {
     private String login;
 
     @NotBlank
+    @PasswordStrengthChecker(message = "Password must contain at least one number")
     private String password;
 
 }
