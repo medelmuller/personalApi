@@ -13,33 +13,27 @@ Moja Aplikacja Cele i Nawyki jest narzędziem do zarządzania osobistymi celami,
 - **Powiadomienia:** Otrzymuj powiadomienia przypominające o aktywnościach i nawykach.
 - **Statystyki:** Analizuj swoje nawyki i postępy za pomocą statystyk i wykresów.
 
-## Instalacja
+## Repozytorium
 
-1. Sklonuj repozytorium: `git clone https://github.com/twoja-aplikacja.git`
-2. Przejdź do katalogu projektu: `cd twoja-aplikacja`
-3. Zainstaluj zależności: `npm install` (jeśli korzystasz z npm) lub `yarn install` (jeśli korzystasz z Yarn).
+1. Sklonuj repozytorium: `git clone https://github.com/medelmuller/personalApi`
 
 ## Uruchomienie
 
-1. Uruchom aplikację: `npm start` lub `yarn start`.
-2. Aplikacja będzie dostępna pod adresem `http://localhost:3000` w przeglądarce.
+1. Uruchom aplikację: Run PersonalApiApplication.java
+2. Swagger dostępny do testowania aplikacji: http://localhost:8080/swagger-ui/index.html
 
 ## Technologie
 
-- React.js
-- Node.js
-- Express.js
-- MongoDB
-
-## Wsparcie i Kontakt
-
-Jeśli masz pytania, sugestie lub napotykasz problemy, skontaktuj się z nami pod adresem support@moja-aplikacja.com.
+- Java
+- Spring Boot
+- Liquibase
+- H2
+- JUnit
+- JPA
 
 ## Autorzy
 
-- Jan Kowalski - jan@moja-aplikacja.com
-- Anna Nowak - anna@moja-aplikacja.com
+- Michał Edelmuller - m.edelmuller@gmail.com
 
 
 
-http://localhost:8080/swagger-ui/index.html
