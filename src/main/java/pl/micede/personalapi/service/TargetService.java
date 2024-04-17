@@ -77,6 +77,17 @@ public class TargetService {
     }
 
 
+    public List<TargetReadDto>  findTargetsBeginsBetweenDates(LocalDateTime minDate, LocalDateTime maxDate) {
+        List<TargetModel> targetBeginsBetween = targetRepository.findAllByTargetBeginsBetween(minDate, maxDate);
+        if (targetBeginsBetween.isEmpty()) {
+            throw new TargetNotFoundException(String.format("Targets, which begins between dates %s and %s not found", minDate, maxDate));
+        }
+        return targetBeginsBetween.stream()
+                .map(targetMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
     /**
      * Updates an existing target by its name with new ending date in a TargetModel object.
      *

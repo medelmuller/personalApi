@@ -3,6 +3,7 @@ package pl.micede.personalapi.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,14 +53,29 @@ public class TargetController {
      * Retrieves all Targets by its category with information converted into ReadDto.
      *
      * @param targetCategory The category of the targets to retrieve.
-     * @return ResponseEntity containing the TargetReadDto if objects are found.
+     * @return ResponseEntity containing the list of TargetReadDto if objects are found.
      */
-    @Operation(summary = "Get Target by Category", description = "Retrieves all users by theirs Category")
+    @Operation(summary = "Get Targets by Category", description = "Retrieves all Targets by theirs Category")
     @GetMapping("/targetsByCategory/{targetCategory}")
     public ResponseEntity<List<TargetReadDto>> getTargetsByCategory(@Valid @PathVariable String targetCategory){
         List<TargetReadDto> targetsByCategory = targetService.getTargetsByCategory(targetCategory);
         return ResponseEntity.ok(targetsByCategory);
     }
+
+    /**
+     * Retrieves all Targets by targetBegins date between given range of dates with information converted into ReadDto.
+     *
+     * @param minDate The minimal date range of the targets to retrieve.
+     * @param maxDate The maximal date range of the targets to retrieve.
+     * @return ResponseEntity containing the list of TargetReadDto if objects are found.
+     */
+    @Operation(summary = "Get Targets with begin date between", description = "Retrieves all Targets by begin date between two dates")
+    @GetMapping("/targetsBeginsBetween")
+    public ResponseEntity<List<TargetReadDto>> getTargetsWithDateBetween(@RequestParam LocalDateTime minDate, @RequestParam LocalDateTime maxDate) {
+        List<TargetReadDto> targetsBeginsBetweenDates = targetService.findTargetsBeginsBetweenDates(minDate, maxDate);
+        return ResponseEntity.ok(targetsBeginsBetweenDates);
+    }
+
 
 
     /**

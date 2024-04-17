@@ -39,7 +39,7 @@ public class TargetModel {
     @Column(name = "category")
     private TargetCategory targetCategory;
 
-    @OneToMany(mappedBy = "target", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "target", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonManagedReference
     private List<HabitModel> habits = new ArrayList<>();
 

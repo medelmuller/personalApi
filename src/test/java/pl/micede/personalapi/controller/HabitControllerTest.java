@@ -1,6 +1,5 @@
 package pl.micede.personalapi.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.micede.personalapi.dto.HabitReadDto;
 import pl.micede.personalapi.dto.HabitReqDto;
@@ -18,13 +18,14 @@ import pl.micede.personalapi.service.HabitService;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = HabitController.class)
+@WithMockUser(username = "Admin", roles = "ADMIN")
 class HabitControllerTest {
 
 
@@ -50,7 +51,7 @@ class HabitControllerTest {
         //when
         BDDMockito.when(habitService.addNewHabit(any(HabitReqDto.class))).thenReturn(new HabitModel());
         //then
-        mockMvc.perform(post("/habit/addHabit")
+        mockMvc.perform(post("/habit/addHabit").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
@@ -113,7 +114,7 @@ class HabitControllerTest {
         //when
         BDDMockito.when(habitService.updateDescriptionById(any(Long.class), any(String.class))).thenReturn(dto);
         //then
-        mockMvc.perform(patch("/habit/updateDescriptionBy/{id}?new-description", 1L)
+        mockMvc.perform(patch("/habit/updateDescriptionBy/{id}?new-description", 1L).with(csrf())
                         .param("newDescription", newDescription)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -130,7 +131,7 @@ class HabitControllerTest {
         //when
         BDDMockito.doNothing().when(habitService).deleteById(id);
         //then
-        mockMvc.perform(delete("/habit/delete/{id}", id)
+        mockMvc.perform(delete("/habit/delete/{id}", id).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }

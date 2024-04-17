@@ -6,8 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.micede.personalapi.dto.TargetReadDto;
 import pl.micede.personalapi.dto.TargetReqDto;
@@ -22,11 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = TargetController.class)
+@WithMockUser(username = "Admin", roles = "ADMIN")
 class TargetControllerTest {
 
     @Autowired
@@ -67,7 +71,7 @@ class TargetControllerTest {
         // Symulacja działania serwisu
         BDDMockito.when(targetService.addNewTarget(any(TargetReqDto.class))).thenReturn(new TargetModel());
         //when //then
-        mockMvc.perform(post("/target/add")
+        mockMvc.perform(post("/target/add").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(reqDto))
@@ -120,14 +124,48 @@ class TargetControllerTest {
         list.add(dto);
 
         //when
-        BDDMockito.when(targetService.getTargetsByCategory(String.valueOf(any(TargetCategory.class)))).thenReturn(list);
+        BDDMockito.when(targetService.getTargetsByCategory("KNOWLEDGE")).thenReturn(list);
         //then
-        mockMvc.perform(get("/targetsByCategory/{targetCategory}", "KNOWLEDGE")
+        mockMvc.perform(get("/target/targetsByCategory/{targetCategory}", "KNOWLEDGE")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(list)));
 
+    }
+
+    @Test
+    void getTargetsWithDateBetween_shouldGetTargetsFoundByBeginDateBetweenRange() throws Exception{
+        //given
+        LocalDateTime targetBegins = LocalDateTime.of(2024, 6, 1, 12, 0);
+        LocalDateTime targetEnds = LocalDateTime.of(2024, 7, 3, 12, 0);
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        LocalDateTime minDate = LocalDateTime.of(2024, 5, 20, 12, 0);
+        LocalDateTime maxDate = LocalDateTime.of(2024, 6, 10, 12, 0);
+
+        TargetReadDto dto = TargetReadDto.builder()
+                .targetName("Study")
+                .targetBegins(targetBegins.format(formatter))
+                .targetEnds(targetEnds.format(formatter))
+                .description("description")
+                .targetCategory(TargetCategory.KNOWLEDGE)
+                .habits(new ArrayList<>())
+                .build();
+
+        List<TargetReadDto> list = new ArrayList<>();
+        list.add(dto);
+
+        //when
+        BDDMockito.when(targetService.findTargetsBeginsBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(list);
+        //then
+        mockMvc.perform(get("/target/targetsBeginsBetween?min-date&max-date" )
+                        .param("minDate", String.valueOf(minDate))
+                        .param("maxDate", String.valueOf(maxDate))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(list)));
     }
 
     @Test
@@ -149,7 +187,7 @@ class TargetControllerTest {
         //when
         BDDMockito.given(targetService.updateTargetEndingDateByName(any(String.class), any(LocalDateTime.class))).willReturn(dto);
         //then
-        mockMvc.perform(patch("/target/updateEndingDate/{targetName}?new-date", "Study")
+        mockMvc.perform(patch("/target/updateEndingDate/{targetName}?new-date", "Study").with(csrf())
                         .param("newDate", formattedNewDate)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -166,7 +204,7 @@ class TargetControllerTest {
         //when
         BDDMockito.doNothing().when(targetService).deleteTargetById(id);
         //then
-        mockMvc.perform(delete("/target/delete/{id}", id)
+        mockMvc.perform(delete("/target/delete/{id}", id).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 

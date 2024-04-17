@@ -2,6 +2,7 @@ package pl.micede.personalapi.service;
 
 import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.micede.personalapi.config.security.SecurityConfig;
 import pl.micede.personalapi.dto.UserReqDto;

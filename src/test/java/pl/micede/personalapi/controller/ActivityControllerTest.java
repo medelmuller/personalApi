@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.micede.personalapi.dto.ActivityReadDto;
 import pl.micede.personalapi.dto.ActivityReqDto;
@@ -19,11 +20,13 @@ import pl.micede.personalapi.service.ActivityService;
 import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ActivityController.class)
+@WithMockUser(username = "Admin", roles = "ADMIN")
 class ActivityControllerTest {
 
     @Autowired
@@ -45,7 +48,7 @@ class ActivityControllerTest {
         //when
         BDDMockito.when(activityService.addNewActivity(any(ActivityReqDto.class), any(Long.class))).thenReturn(new ActivityModel());
         //then
-        mockMvc.perform(post("/activity/add/{habitId}", 1L)
+        mockMvc.perform(post("/activity/add/{habitId}", 1L).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
@@ -84,7 +87,7 @@ class ActivityControllerTest {
         //when
         BDDMockito.when(activityService.updateDescriptionById(any(Long.class), any(String.class))).thenReturn(dto);
         //then
-        mockMvc.perform(patch("/activity/updateDescription/{id}?new-description", 1L)
+        mockMvc.perform(patch("/activity/updateDescription/{id}?new-description", 1L).with(csrf())
                         .param("newDescription", newDescription)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -100,7 +103,7 @@ class ActivityControllerTest {
         //when
         BDDMockito.doNothing().when(activityService).deleteById(id);
         //then
-        mockMvc.perform(delete("/activity/delete/{id}", id)
+        mockMvc.perform(delete("/activity/delete/{id}", id).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
