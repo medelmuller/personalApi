@@ -2,9 +2,7 @@ package pl.micede.personalapi.service;
 
 import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import pl.micede.personalapi.config.security.SecurityConfig;
 import pl.micede.personalapi.dto.UserReqDto;
 import pl.micede.personalapi.model.UserModel;
 import pl.micede.personalapi.repository.UserRepository;
@@ -23,7 +21,7 @@ public class UserService {
      * Creates a new user using details provided in a UserReqDto object.
      *
      * @param userReqDto Data Transfer Object containing user details.
-     * @return The saved TargetModel entity.
+     * @return The saved UserModel entity.
      * @throws UserAlreadyExistsException if UserModel already exists in database.
      */
     public UserModel addNewUser(UserReqDto userReqDto) {
@@ -39,7 +37,6 @@ public class UserService {
 
     }
 
-
     /**
      * Retrieves a specific User by its ID.
      *
@@ -52,7 +49,6 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User by %d ID not found", id)));
     }
-
 
     /**
      * Updates an existing User by its login with new password in a UserModel object.
@@ -69,11 +65,11 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with %s login not found", login)));
     }
 
-
     /**
      * Deletes a User from the database.
      *
      * @param id The ID of the user to be deleted.
+     * @throws UserNotFoundException if user could not be found by the login.
      */
     public void deleteUserById(Long id) {
         if (!userRepository.existsById(id)) {
@@ -82,6 +78,13 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    /**
+     * Checks if the user exists in the database and can log in to api.
+     *
+     * @param dto request Data Transfer Object of the user to be found.
+     * @throws UserNotFoundException if user could not be found by the login.
+     * @return returns access to log in, if passwords from request and database are the same.
+     */
 
     public boolean authenticateUser(UserReqDto dto) {
         UserModel byLogin = userRepository.findByLogin(dto.getLogin())
@@ -89,6 +92,11 @@ public class UserService {
         return dto.getPassword().equals(byLogin.getPassword());
     }
 
+    /**
+     * Adds InMemoryUser as UserModel object to database.
+     *
+     * @param admin In memory details of the user to be added.
+     */
     public void saveInMemoryUsers(UserDetails admin) {
         UserModel adminModel = new UserModel();
         adminModel.setLogin(admin.getUsername());

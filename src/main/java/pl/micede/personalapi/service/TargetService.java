@@ -22,7 +22,6 @@ public class TargetService {
     private final TargetRepository targetRepository;
     private final TargetMapper targetMapper = new TargetMapper();
 
-
     /**
      * Creates a new target using details provided in a TargetReqDto object.
      *
@@ -41,7 +40,6 @@ public class TargetService {
         return targetRepository.save(targetModel);
     }
 
-
     /**
      * Retrieves a specific target by its ID.
      *
@@ -57,7 +55,6 @@ public class TargetService {
             throw new TargetNotFoundException("Target entity not found");
         }
     }
-
 
     /**
      * Retrieves all targets found by category.
@@ -76,7 +73,6 @@ public class TargetService {
         return listOfTargets;
     }
 
-
     public List<TargetReadDto>  findTargetsBeginsBetweenDates(LocalDateTime minDate, LocalDateTime maxDate) {
         List<TargetModel> targetBeginsBetween = targetRepository.findAllByTargetBeginsBetween(minDate, maxDate);
         if (targetBeginsBetween.isEmpty()) {
@@ -86,7 +82,6 @@ public class TargetService {
                 .map(targetMapper::toDto)
                 .collect(Collectors.toList());
     }
-
 
     /**
      * Updates an existing target by its name with new ending date in a TargetModel object.
@@ -102,8 +97,6 @@ public class TargetService {
         return byTargetName.map(targetMapper::toDto)
                 .orElseThrow(() -> new TargetNotFoundException(String.format("%s target not found", targetName)));
     }
-
-
 
     /**
      * Deletes a target from the database.

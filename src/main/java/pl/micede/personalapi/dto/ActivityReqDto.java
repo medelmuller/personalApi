@@ -13,13 +13,11 @@ import java.util.List;
 @Builder
 public class ActivityReqDto {
 
-    @NotBlank
+    @NotBlank(message = "Invalid Name: Empty name")
     private String activityName;
 
-    @NotBlank
+    @NotBlank(message = "Invalid Description: Empty description")
     private String activityDescription;
-
-//    private Long habitId;
 
     private List<HabitModel> habits;
 }

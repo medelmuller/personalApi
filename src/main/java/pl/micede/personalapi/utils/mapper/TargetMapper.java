@@ -3,7 +3,6 @@ package pl.micede.personalapi.utils.mapper;
 import lombok.*;
 import org.springframework.stereotype.Component;
 import pl.micede.personalapi.dto.TargetReadDto;
-import pl.micede.personalapi.dto.TargetReqDto;
 import pl.micede.personalapi.model.TargetModel;
 
 import java.time.format.DateTimeFormatter;

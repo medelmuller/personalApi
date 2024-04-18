@@ -8,6 +8,12 @@ import java.util.Optional;
 
 public interface HabitRepository extends JpaRepository<HabitModel, Long> {
 
+    /**
+     * Finds HabitModel entity by its name;
+     *
+     * @param habitName The unique name of the habit;
+     * @return HabitModel Object found by its name;
+     */
     Optional<HabitModel> findByHabitName(String habitName);
 
 

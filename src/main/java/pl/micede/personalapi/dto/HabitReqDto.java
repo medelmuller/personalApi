@@ -16,16 +16,16 @@ import java.util.List;
 @Builder
 public class HabitReqDto {
 
-    @NotBlank
+    @NotBlank(message = "Invalid Name: Empty name")
     private String habitName;
 
-    @NotBlank
+    @NotBlank(message = "Invalid Description: Empty description")
     private String habitDescription;
 
-    @NotNull
+    @NotNull(message = "Invalid Type: Empty type")
     private FrequencyType frequencyType;
 
-    @NotNull
+    @NotNull(message = "Invalid Target: Type Target number")
     private TargetModel target;
 
     private List<ActivityModel> activities;

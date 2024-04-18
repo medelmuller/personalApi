@@ -4,20 +4,17 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import pl.micede.personalapi.model.TargetModel;
 import pl.micede.personalapi.utils.validator.PasswordStrengthChecker;
-
-import java.util.List;
 
 @Getter
 @Setter
 @Builder
 public class UserReqDto {
 
-    @NotBlank
+    @NotBlank(message = "Invalid Login: Empty login")
     private String login;
 
-    @NotBlank
+    @NotBlank(message = "Invalid Password: Empty password")
     @PasswordStrengthChecker(message = "Password must contain at least one number")
     private String password;
 

@@ -62,13 +62,7 @@ class HabitControllerTest {
     @Test
     void getHabitById_ShouldGetHabitById() throws Exception {
         //given
-        HabitReadDto dto = HabitReadDto.builder()
-                .habitName("Read")
-                .habitDescription("Reading Java books")
-                .frequencyType(FrequencyType.DAILY)
-                .target(new TargetModel())
-                .activities(new ArrayList<>())
-                .build();
+        HabitReadDto dto = getHabitReadDto();
         //when
         BDDMockito.when(habitService.findById(any(Long.class))).thenReturn(dto);
         //then
@@ -79,16 +73,12 @@ class HabitControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(dto)));
     }
 
+
+
     @Test
     void getHabitByName_ShouldGetHabitByName() throws Exception {
         //given
-        HabitReadDto dto = HabitReadDto.builder()
-                .habitName("Read")
-                .habitDescription("Reading Java books")
-                .frequencyType(FrequencyType.DAILY)
-                .target(new TargetModel())
-                .activities(new ArrayList<>())
-                .build();
+        HabitReadDto dto = getHabitReadDto();
         //when
         BDDMockito.when(habitService.findByName(any(String.class))).thenReturn(dto);
         //then
@@ -104,13 +94,7 @@ class HabitControllerTest {
         //given
         String newDescription = "New description";
 
-        HabitReadDto dto = HabitReadDto.builder()
-                .habitName("Read")
-                .habitDescription("Reading Java books")
-                .frequencyType(FrequencyType.DAILY)
-                .target(new TargetModel())
-                .activities(new ArrayList<>())
-                .build();
+        HabitReadDto dto = getHabitReadDto();
         //when
         BDDMockito.when(habitService.updateDescriptionById(any(Long.class), any(String.class))).thenReturn(dto);
         //then
@@ -134,5 +118,16 @@ class HabitControllerTest {
         mockMvc.perform(delete("/habit/delete/{id}", id).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+
+    private static HabitReadDto getHabitReadDto() {
+        return HabitReadDto.builder()
+                .habitName("Read")
+                .habitDescription("Reading Java books")
+                .frequencyType(FrequencyType.DAILY)
+                .target(new TargetModel())
+                .activities(new ArrayList<>())
+                .build();
     }
 }

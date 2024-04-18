@@ -18,19 +18,19 @@ import java.util.List;
 @Builder
 public class TargetReqDto {
 
-    @NotBlank
+    @NotBlank(message = "Invalid Name: Empty name")
     private String targetName;
 
-    @NotBlank
+    @NotBlank(message = "Invalid Description: Empty description")
     private String description;
 
-    @FutureOrPresent
+    @FutureOrPresent(message = "Invalid Date: Future or present date")
     private LocalDateTime targetBegins;
 
-    @FutureOrPresent
+    @FutureOrPresent(message = "Invalid Date: Future or present date")
     private LocalDateTime targetEnds;
 
-    @NotNull
+    @NotNull(message = "Invalid Name: Empty name")
     private TargetCategory targetCategory;
 
 

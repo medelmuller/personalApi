@@ -18,6 +18,12 @@ public class LoginController {
         private final AuthenticationManager authenticationManager;
         private final UserService userService;
 
+        /**
+        * Checks if user details contained in request Data Transfer Object are authenticated to log in.
+        *
+        * @param dto The user data transfer object containing the user details.
+        * @return ResponseEntity with http status Accepted.
+        */
         @PostMapping("/login")
         public ResponseEntity<Void> loginWithUserData(@Valid @RequestBody UserReqDto dto) {
             if (userService.authenticateUser(dto)) {

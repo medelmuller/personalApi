@@ -75,7 +75,7 @@ public class HabitService {
      * Updates an existing habit by its ID with new description in a HabitModel object.
      *
      * @param id The ID of the habit to be updated.
-     * @param newDescription New description of the target.
+     * @param newDescription New description of the habit.
      * @throws HabitNotFoundException if habit could not be found by the ID.
      * @return The updated HabitModel entity mapped into read dto.
      */
