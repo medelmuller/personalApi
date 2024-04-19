@@ -7,10 +7,9 @@ Moja Aplikacja Cele i Nawyki jest narzędziem do zarządzania osobistymi celami,
 ## Funkcje
 
 - **Zarządzanie Celami:** Dodawaj, edytuj i usuwaj cele osobiste.
-- **Śledzenie Postępu:** Monitoruj postęp w realizacji swoich celów. /IN PROGRESS
 - **Nawyki:** Przypisuj nawyki do celów, aby wspierać ich osiągnięcie.
 - **Aktywności:** Planuj aktywności związane z celami i nawykami.
-- **Powiadomienia:** Otrzymuj powiadomienia przypominające o aktywnościach i nawykach.
+- **Powiadomienia:** Otrzymuj powiadomienia przypominające o aktywnościach i nawykach. /IN PROGRESS
 
 ## Repozytorium
 
