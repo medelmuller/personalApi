@@ -18,11 +18,12 @@ Moja Aplikacja Cele i Nawyki jest narzędziem do zarządzania osobistymi celami,
 ## Uruchomienie
 
 1. Uruchom aplikację: Run PersonalApiApplication.java
-2. Swagger dostępny do testowania aplikacji: http://localhost:8080/swagger-ui/index.html
+2. Swagger dostępny do testowania aplikacji działa na porcie lokalnym.
 
 ## Technologie
 
-- Java
+- Java 8
+- Java 17
 - Spring Boot
 - Liquibase
 - H2

@@ -1,8 +1,8 @@
 INSERT INTO users(login, password)
-VALUES ( 'Fox', 'sneakyfox' );
+VALUES ( 'Fox', 'sneakyfox1' );
 INSERT INTO users(login, password)
-VALUES ( 'Hawk', 'killerhawk' );
+VALUES ( 'Hawk', 'killerhawk1' );
 INSERT INTO users(login, password)
-VALUES ( 'Lion', 'jungleking' );
+VALUES ( 'Lion', 'jungleking1' );
 INSERT INTO users(login, password)
-VALUES ( 'Andzej', 'jestcool' );
+VALUES ( 'Andzej', 'jestcool1' );
